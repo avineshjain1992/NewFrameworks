@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Task workshop</title>
+  </head>
+  <body>
+    <h1>Task workshop</h1>
+    <form id="login">
+      <label
+        >Username<input
+          name="username"
+          autocomplete="username"
+          required /></label
+      ><label
+        >Password<input
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          required /></label
+      ><button>Log in</button>
+    </form>
+    <p role="alert" id="error"></p>
+    <section id="workspace" hidden>
+      <h2>Your tasks</h2>
+      <form id="create">
+        <label>Task title<input name="title" required maxlength="120" /></label
+        ><button>Add task</button>
+      </form>
+      <ul aria-label="Tasks" id="tasks"></ul>
+    </section>
+    <script type="module">
+      let token;
+      const error = document.querySelector("#error");
+      async function request(path, method = "GET", body) {
+        const response = await fetch("/api" + path, {
+          method,
+          headers: {
+            "content-type": "application/json",
+            ...(token ? { authorization: "Bearer " + token } : {}),
+          },
+          ...(body ? { body: JSON.stringify(body) } : {}),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error);
+        return data;
+      }
+      async function load() {
+        const data = await request("/tasks");
+        const list = document.querySelector("#tasks");
+        list.replaceChildren();
+        for (const task of data.tasks) {
+          const li = document.createElement("li");
+          const title = document.createElement("span");
+          title.textContent = task.title;
+          li.append(title);
+          if (task.id !== "welcome") {
+            const edit = document.createElement("button");
+            edit.textContent = "Complete";
+            edit.onclick = async () => {
+              await request("/tasks/" + task.id, "PATCH", {
+                title: task.title,
+                completed: true,
+              });
+              await load();
+            };
+            li.append(edit);
+            const remove = document.createElement("button");
+            remove.textContent = "Delete";
+            remove.onclick = async () => {
+              await request("/tasks/" + task.id, "DELETE");
+              await load();
+            };
+            li.append(remove);
+          }
+          if (task.completed)
+            li.append(document.createTextNode(" (completed)"));
+          list.append(li);
+        }
+      }
+      document.querySelector("#login").onsubmit = async (event) => {
+        event.preventDefault();
+        const form = new FormData(event.target);
+        try {
+          token = (await request("/login", "POST", Object.fromEntries(form)))
+            .token;
+          event.target.hidden = true;
+          document.querySelector("#workspace").hidden = false;
+          error.textContent = "";
+          await load();
+        } catch (e) {
+          error.textContent = e.message;
+        }
+      };
+      document.querySelector("#create").onsubmit = async (event) => {
+        event.preventDefault();
+        try {
+          await request(
+            "/tasks",
+            "POST",
+            Object.fromEntries(new FormData(event.target)),
+          );
+          event.target.reset();
+          await load();
+        } catch (e) {
+          error.textContent = e.message;
+        }
+      };
+    </script>
+  </body>
+</html>

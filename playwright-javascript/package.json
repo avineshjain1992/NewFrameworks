@@ -1,0 +1,31 @@
+{
+  "name": "playwright-javascript",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/test.mjs all",
+    "test:api": "node scripts/test.mjs api",
+    "test:web": "node scripts/test.mjs web",
+    "test:smoke": "node scripts/test.mjs all --grep @smoke",
+    "test:regression": "node scripts/test.mjs all --grep @regression",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:workspace": "cd .. && node playwright-javascript/node_modules/eslint/bin/eslint.js demo scripts --config eslint.config.mjs",
+    "format:workspace:check": "cd .. && node playwright-javascript/node_modules/prettier/bin/prettier.cjs --check .",
+    "format:workspace": "cd .. && node playwright-javascript/node_modules/prettier/bin/prettier.cjs --write ."
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.1",
+    "ajv": "8.20.0",
+    "allure": "3.22.1",
+    "allure-playwright": "3.14.0",
+    "dotenv": "18.0.9",
+    "eslint": "10.13.0",
+    "fflate": "0.8.3",
+    "pino": "10.4.0",
+    "prettier": "3.9.10"
+  }
+}

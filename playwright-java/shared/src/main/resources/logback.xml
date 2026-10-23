@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<configuration>
+  <property name="REPORT_DIR" value="${REPORT_DIR:-target/reports}"/>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%date{ISO8601} %-5level %logger{24} - %msg%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>${REPORT_DIR}/logs/tests.log</file>
+    <append>true</append>
+    <encoder>
+      <pattern>%date{ISO8601} [%thread] %-5level %logger{24} - %msg%n</pattern>
+    </encoder>
+  </appender>
+  <logger name="org.apache" level="WARN"/>
+  <logger name="io.restassured" level="WARN"/>
+  <root level="${LOG_LEVEL:-INFO}">
+    <appender-ref ref="CONSOLE"/>
+    <appender-ref ref="FILE"/>
+  </root>
+</configuration>

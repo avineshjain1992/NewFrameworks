@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<!DOCTYPE suite
+  SYSTEM 'https://testng.org/testng-1.0.dtd'>
+<suite name="Web" parallel="methods" thread-count="2">
+  <test name="Tasks Web">
+    <classes>
+      <class name="workshop.web.TasksWebTest"/>
+    </classes>
+  </test>
+</suite>

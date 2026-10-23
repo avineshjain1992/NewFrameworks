@@ -1,0 +1,7 @@
+**/node_modules/
+**/target/
+**/reports/
+**/artifacts/
+**/mvnw*
+**/package-lock.json
+.local/
